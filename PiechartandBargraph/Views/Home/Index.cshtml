@@ -1,0 +1,125 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+<link href="~/Content/bootstrap.css" rel="stylesheet" />
+<link href="~/Content/c3.css" rel="stylesheet" />
+<script src="~/Scripts/chart.js"></script>
+<h2>PieChart</h2>
+<div class="row">
+    <div class="col-md-1">
+        <label for="TypeofChart">ChartName</label>
+        </div>
+        <div class="col-md-4">
+            <select id="TypeofChart" name="Chart" class="form-control" title="chartname">
+                <option value="select">Please-select</option>
+                <option value="pie">pie</option>
+                <option value="bar">bar</option>
+                <option value="line">line</option>
+                <option value="doughnut">doughnut</option>
+            </select>
+        </div>
+        <div class="col-md-7">
+            <input id="statusOfChart" type="button" title="chart" value="DisplayChart" />
+        </div>
+    </div>
+    <div id="pieChart">
+
+    </div>
+    <div id="ChartName"></div>
+    <div id="chartContainer">
+        <canvas id="myChart" style="max-height:400px;max-width:400px"></canvas>
+    </div>
+
+    @section scripts{
+        <script src="~/Scripts/jquery-3.3.1.js"></script>
+        <script src="~/Scripts/c3.js"></script>
+        <script src="~/Scripts/d3.js"></script>
+        <script type="text/javascript">
+            $(document).ready(function () {
+                debugger;
+                $.ajax({
+                    type: "GET",
+                    url: "/Piechart/PieChart",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (response) {
+                        debugger;
+                        //successFunc(response);
+                    },
+                });
+
+                function successFunc(jsondata) {
+                    debugger
+                    var data = {};
+                    var CountryNames = [];
+                    jsondata.forEach(function (e) {
+                        CountryNames.push(e.CountryNAme);
+                        data[e.CountryNAme] = e.CountryPopulation;
+
+                    });
+                    var chart = c3.generate({
+                        bindto: '#pieChart',
+                        data: {
+                            json: [data],
+                            keys: {
+                                value: CountryNames,
+                            },
+                            //type: 'pie'
+                            type: 'bar'
+                        },
+                        color: {
+                            pattern: ['#1f77b4', '#aec7e8', '#ff7f0e', '#ffbb78', '#2ca02c', '#98df8a', '#d62728', '#ff9896', '#9467bd', '#c5b0d5', '#8c564b', '#c49c94', '#e377c2', '#f7b6d2', '#7f7f7f', '#c7c7c7', '#bcbd22', '#dbdb8d', '#17becf', '#9edae5']
+                        },
+                    });
+                }
+
+                $("#statusOfChart").click(function () {
+                    debugger;
+                    $.ajax({
+                        type: "POST",
+                        url: "/Piechart/CountryData",
+                        data: "",
+                        // contentType: "application/json; charset=utf-8",
+                        // dataType: "json",
+                        success: ChartsGetting,
+                        //success: function (response) {
+                        //    debugger;
+                        //    ChartsGetting(response);
+                        //},
+
+                    });
+                });
+                function ChartsGetting(data) {
+                    var chartView = document.getElementById("chartContainer");
+                    debugger
+                    var chartName = $("#TypeofChart").val();
+                    var chartLables = data[0];
+                    var chartData = data[1];
+                    var barColor = ["red", "DodgerBlue", "green", "orange", "Violet", "blue"];
+                    chartView.innerHTML = '&nbsp';
+                    $("#chartContainer").append('<canvas id="myChart" style="max-width:400px;max-height:400px"></canvas>');
+
+                    var chart = new Chart("myChart", {
+                        type: chartName,
+                        data: {
+                            labels: chartLables,
+                            datasets: [{
+                                label: 'Population',
+                                data: chartData,
+                                backgroundColor: barColor
+                            }]
+                        },
+                        options: {
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
+                            }
+                        }
+                    });
+
+                }
+            });
+        </script>
+    }

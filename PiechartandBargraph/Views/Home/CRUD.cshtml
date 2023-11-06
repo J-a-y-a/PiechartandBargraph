@@ -1,0 +1,37 @@
+﻿
+@{
+    ViewBag.Title = "CRUD";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>CRUD</h2>
+<form id="crudform">
+    <div class="row">
+        <table id="stuTable" class="table table-bordered ">
+            <tr>
+                <th>StudentID</th>
+                <th>StudentName</th>
+                <th>Class</th>
+                <th>Section</th>
+                <th>ParentName</th>
+                <th>Actions</th>
+            </tr>
+            <tr>
+                <td>101</td>
+                <td>Jaya</td>
+                <td>9</td>
+                <td>B</td>
+                <td>Venkat</td>
+                <td><button class="btn-danger" id="btnEdit">EDIT</button><button class="btn-success" id="btnDelete">Delete</button></td>
+            </tr>
+        </table>
+    </div>
+</form>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#btnEdit").click(function () {
+
+        })
+
+    });
+</script>
